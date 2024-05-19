@@ -103,6 +103,20 @@ void brick_preview(int brick_num);
 
 
 int main(){
+    int game_record;    //게임 최고기록
+    int record=0; //현재 플레이하는 게임의 점수
+    FILE *file=fopen("/Users/leewooseok/Desktop/project/tetris/game_record.txt", "r+");
+    if(file==NULL){
+        fclose(file);
+        game_record=0;
+        FILE *file=fopen("/Users/leewooseok/Desktop/project/tetris/game_record.txt","w+");
+        fprintf(file,"%d",game_record);
+        fclose(file);
+    }
+    else{
+        fscanf(file,"%d",&game_record);
+        fclose(file);
+    }
     system("clear");
     hide()
     init_keyboard();
@@ -112,6 +126,13 @@ int main(){
     int brick_shape_1=rand()%8;
     if(brick_shape_1==7) brick_shape_1=6;
     while(1){
+        gotoxy(8,5);
+        if(game_record>record){
+            printf("<최고점수 : %d>", game_record);
+        }
+        else{
+            printf("<최고점수 : %d>", record);
+        }
         int brick_shape_2=rand()%8;
         if(brick_shape_2==7) brick_shape_2=6;
         print_Board();
@@ -121,9 +142,16 @@ int main(){
             break;
         }
         down_brick(brick_num,brick_shape_1);
-        while(line_max());   //여러개의 줄이 한번에 완성될수도 있으니 완성된 모든 줄이 사라질때까지 반복
+        while(line_max()){
+            record+=100;
+        }  //여러개의 줄이 한번에 완성될수도 있으니 완성된 모든 줄이 사라질때까지 반복
         brick_num++;
         brick_shape_1=brick_shape_2;  
+    }
+    if(record>game_record){
+        FILE *file=fopen("/Users/leewooseok/Desktop/project/tetris/game_record.txt","w+");
+        fprintf(file,"%d", record);
+        fclose(file);
     }
 
 }
@@ -498,4 +526,7 @@ void brick_preview(int brick_num){   //블럭이 어떻게 바닥에 닿을지 �
             }
         }
     }
+}
+void gameRecord(){
+    FILE *file=fopen("/Users/leewooseok/Desktop/project/tetris","w+");
 }
